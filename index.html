@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MemoryCircle Forum</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f6f4;--card:#fff;--ink:#1f2a2e;--mute:#5b6b70;--line:#d5dfdb;--accent:#2f6f73;--accent-ink:#fff;--soft:#e2efec;--warn:#a23b2a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141b1d;--card:#1d2629;--ink:#e8f0ee;--mute:#9bb0b0;--line:#33444a;--accent:#6cc0c3;--accent-ink:#0e1a1c;--soft:#24383a;--warn:#f0a090}}
+:root[data-theme="dark"]{--bg:#141b1d;--card:#1d2629;--ink:#e8f0ee;--mute:#9bb0b0;--line:#33444a;--accent:#6cc0c3;--accent-ink:#0e1a1c;--soft:#24383a;--warn:#f0a090}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 "Atkinson Hyperlegible",Verdana,system-ui,sans-serif}
+header{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.bar{max-width:820px;margin:auto;padding:12px 16px;display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap}
+.brand{font-weight:700;font-size:1.3rem;color:var(--accent);background:none;border:0;cursor:pointer;padding:0}
+main{max-width:820px;margin:auto;padding:20px 16px 60px}
+button,input,textarea,select{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:10px 18px;cursor:pointer;font-weight:700;min-height:44px}
+.btn.ghost{background:transparent;color:var(--accent);border:2px solid var(--accent)}
+.btn.link{background:none;color:var(--accent);padding:4px 0;min-height:0;text-decoration:underline}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:14px}
+h1{font-size:1.6rem;margin:0 0 4px}h2{font-size:1.35rem;margin:0 0 8px}
+.mute{color:var(--mute);font-size:.9rem}
+.thread{display:flex;gap:14px;cursor:pointer}
+.thread:hover{border-color:var(--accent)}
+.votes{display:flex;flex-direction:column;align-items:center;min-width:44px}
+.votes button{background:none;border:0;cursor:pointer;font-size:1.2rem;min-width:44px;min-height:36px;color:var(--mute);border-radius:8px}
+.votes button.on{color:var(--accent);background:var(--soft)}
+.votes b{font-size:1.05rem}
+.tag{display:inline-block;background:var(--soft);color:var(--accent);border-radius:99px;padding:1px 12px;font-size:.85rem;font-weight:700}
+.thread h2{margin:6px 0 4px}
+.snip{margin:0 0 6px;color:var(--ink)}
+label{display:block;font-weight:700;margin:12px 0 4px}
+input,textarea,select{width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--card)}
+textarea{min-height:110px;resize:vertical}
+.tabs{display:flex;gap:8px;margin-bottom:6px}
+.tabs button{flex:1;padding:10px;border:2px solid var(--line);background:none;border-radius:10px;cursor:pointer;font-weight:700;min-height:44px}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.err{color:var(--warn);font-weight:700;margin:10px 0 0;min-height:1.4em}
+.comment{border-left:4px solid var(--soft);padding:2px 0 2px 14px;margin:16px 0}
+.comment p{margin:4px 0 0;white-space:pre-wrap}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.hide{display:none}
+.note{background:var(--soft);border-radius:10px;padding:10px 14px;font-size:.92rem;margin-top:14px}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:14px 16px;border:2px solid var(--line);background:var(--card);border-radius:12px;cursor:pointer;min-height:52px}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--soft);font-weight:700}
+.prog{height:8px;background:var(--soft);border-radius:9px;overflow:hidden}.prog i{display:block;height:100%;background:var(--accent)}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
+ul.tips{padding-left:22px;margin:6px 0}.tips li{margin:6px 0}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+.tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:150px;background:var(--card);border:3px solid var(--line);border-radius:20px;font-size:1.4rem;font-weight:700;cursor:pointer;padding:12px}
+.tile span{font-size:3.2rem;line-height:1}.tile small{font-size:.85rem;color:var(--accent)}
+.tile:hover{border-color:var(--accent)}.tile.sos{width:100%;min-height:110px;border-color:var(--warn);color:var(--warn);flex-direction:row;gap:14px}
+.bigbtn{font-size:1.3rem;padding:16px 26px;min-height:60px}.big{font-size:1.6rem;font-weight:700}
+.orbwrap{display:flex;justify-content:center;padding:30px 0}
+.orb{width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,var(--accent),var(--soft));animation:br 8s ease-in-out infinite}
+@keyframes br{0%,100%{transform:scale(.6)}50%{transform:scale(1.1)}}
+.bubs{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin:24px 0}
+.bub{width:92px;height:92px;border-radius:50%;border:0;cursor:pointer;opacity:.9}
+.pop{animation:pop .6s}@keyframes pop{50%{transform:scale(1.25);opacity:1}}
+.mc{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:380px;margin:20px auto}
+.mcard{aspect-ratio:1;font-size:2.8rem;background:var(--card);border:3px solid var(--line);border-radius:16px;cursor:pointer}.mcard.ok{background:var(--soft);border-color:var(--accent)}
+.idc{font-size:1.4rem;text-align:center;margin-top:14px}.idc b{font-size:2rem}
+@media (prefers-reduced-motion:reduce){.orb{animation-duration:16s}.pop{animation:none}}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <button class="brand" onclick="go('feed')">MemoryCircle Forum</button>
+  <div id="user"></div>
+</div></header>
+<main id="app"></main>
+
+<script>
+const KEY='mc_forum_v1';
+const ago=m=>Date.now()-m*60000;
+const seed=()=>({users:[],session:null,threads:[
+ {id:1,title:'Dad keeps asking where Mom is. How do you answer?',topic:'Caregiving',author:'Priya_K',t:ago(300),votes:{Priya_K:1,Marcus:1,Elena:1},
+  body:'My father (early Alzheimer\'s) asks several times a day where my mother is. She passed two years ago. Telling him the truth upsets him all over again. What has worked for you?',
+  comments:[
+   {a:'Marcus',t:ago(240),x:'We stopped correcting and started redirecting. "Tell me about when you two met" calmed Dad far more than the facts did.'},
+   {a:'Elena',t:ago(200),x:'Our nurse suggested meeting the feeling, not the question. He is missing her, so we say "You love her very much." It helped.'},
+   {a:'Dr_Anand',t:ago(120),x:'Agree with both. Validation over correction is standard guidance. A photo album he can hold also gives him something to do with the feeling.'}]},
+ {id:2,title:'Memory exercises that actually helped after my concussion',topic:'Amnesia recovery',author:'Jon_R',t:ago(1500),votes:{Jon_R:1,Sana:1},
+  body:'Eight months after a head injury with memory loss. Daily routines, a notebook by the door and a 10-minute evening recap are what worked for me. Anyone tried spaced-repetition apps?',
+  comments:[
+   {a:'Sana',t:ago(1300),x:'Yes. I use a simple flashcard app for names and appointments. Short sessions twice a day work better than one long one.'},
+   {a:'Lucia',t:ago(900),x:'Thank you for sharing. Seeing someone else months in gives me hope for my brother.'}]},
+ {id:3,title:'Introduce yourself: who are you caring for?',topic:'Welcome',author:'Moderator',t:ago(4000),votes:{Elena:1,Marcus:1,Jon_R:1,Sana:1},
+  body:'New here? Say hello. Tell us who you are supporting or what you are going through. Everyone is welcome and there are no silly questions.',
+  comments:[
+   {a:'Elena',t:ago(3800),x:'Hi all. I care for my mother (vascular dementia, diagnosed last year). Glad to have found this place.'},
+   {a:'Marcus',t:ago(3000),x:'Welcome, Elena. Take things one day at a time and be gentle with yourself.'},
+   {a:'Sana',t:ago(2500),x:'Hello from me too. Supporting my grandfather. The advice here has already helped.'}]}
+]});
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.threads)S=seed();
+S.profiles={};S.session=null;S.users=[];S.threads=[];S.comments={};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({...S,profiles:{},session:null,uid:null,users:[],threads:[],comments:{}}))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rel=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'};
+const score=t=>Object.values(t.votes).reduce((a,b)=>a+b,0);
+const hash=async p=>{try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return btoa(p)}};
+let view='feed',openId=null,authMode='in',err='';
+const $=s=>document.querySelector(s);
+
+let unT=null,unC=null;
+function startListen(){stopListen();if(window.FB)unT=FB.listenThreads(l=>{S.threads=l;if(view==='feed'||(view==='thread'&&!document.activeElement.matches('textarea')))render()})}
+function stopListen(){if(unT)unT();if(unC)unC();unT=unC=null;S.threads=[];S.comments={}}
+function go(v,id){stopAll();act=null;view=v;openId=id||null;err='';if(unC){unC();unC=null}if(v==='thread'&&id&&window.FB&&S.uid)unC=FB.listenComments(id,l=>{S.comments[id]=l;if(view==='thread'&&!document.activeElement.matches('textarea'))render()});render();scrollTo(0,0)}
+function render(){
+  $('#user').innerHTML=S.session?`<button class="btn link" onclick="go('feed')">💬 Community</button> <button class="btn link" onclick="go('plan')">My calm space</button> <span class="mute">Hi, <b>${esc(S.session)}</b></span> <button class="btn ghost" onclick="signOut()">Sign out</button>`:`<button class="btn link" onclick="go('feed')">💬 Community</button> <button class="btn" onclick="go('auth')">Sign in</button>`;
+  const a=$('#app');
+  if(view==='auth')a.innerHTML=authHTML();
+  else if(view==='new')a.innerHTML=newHTML();
+  else if(view==='onb')a.innerHTML=onbHTML();
+  else if(view==='plan'){a.innerHTML=planHTML();afterPlan()}
+  else if(view==='thread')a.innerHTML=threadHTML();
+  else a.innerHTML=feedHTML();
+}
+let ctab='threads';
+function carersHTML(){
+  const p=S.profiles[S.session];
+  if(!p)return `<div class="card"><h2>Guide for family and carers</h2><p>This guide is built from the check-in answers. Take the short check-in to see tips made for you.</p><button class="btn" onclick="startOnb()">Start check-in</button></div>`;
+  const name=p.pn||S.session,idx=STEPS[2].o.indexOf(p.level),st=idx===3?'late':idx===2?'mid':'early';
+  const li=a=>'<ul class="tips">'+a.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>';
+  return `<h2 style="margin-top:6px">Guide for family and carers</h2>
+  <div class="card"><h2>How to help</h2>${li(STAGE[st])}<p class="mute" style="margin-bottom:0">Based on: ${esc(p.level)}</p></div>
+  <div class="card"><h2>What calms ${esc(name)}</h2>${li((p.comfort||[]).map(c=>c+'. '+COMFORT[c]))}</div>
+  ${p.lost!=='Never'?`<div class="card"><h2>Staying safe</h2>${li(['Keep an ID bracelet or card with name, address and '+p.tn+'\'s number.','Share location through a phone, or use a GPS tag.','Do not leave them alone in new places.'])}</div>`:''}
+  <div class="card"><h2>Helpful words</h2><p style="margin-top:0"><b>Try:</b> "You are safe. I am here." "Let us do it together."</p><p style="margin-bottom:0"><b>Avoid:</b> "Don't you remember?" and arguing about what is true.</p></div>
+  <button class="btn" onclick="copySum(this)">Copy plan to share</button> <button class="btn ghost" onclick="startOnb()">Update answers</button>
+  <p class="note">A guide, not a diagnosis. In an emergency, contact a doctor or your local emergency number.</p>`;
+}
+function feedHTML(){
+  if(!S.session)return `<div class="card" style="text-align:center"><h1>Community</h1><p>Sign in to read and join the conversation.</p><button class="btn bigbtn" onclick="go('auth')">Sign in</button></div>`;
+  const list=[...S.threads].sort((x,y)=>score(y)-score(x)||y.t-x.t).map(t=>{
+    const me=S.uid&&t.votes[S.uid];
+    return `<article class="card thread" onclick="go('thread','${t.id}')">
+      <div class="votes" onclick="event.stopPropagation()">
+        <button class="${me===1?'on':''}" aria-label="Upvote" onclick="vote('${t.id}',1)">▲</button><b>${score(t)}</b>
+        <button class="${me===-1?'on':''}" aria-label="Downvote" onclick="vote('${t.id}',-1)">▼</button></div>
+      <div><span class="tag">${esc(t.topic)}</span><h2>${esc(t.title)}</h2>
+      <p class="snip">${esc(t.body.slice(0,140))}${t.body.length>140?'…':''}</p>
+      <span class="mute">Posted by ${esc(t.author)}, ${rel(t.t)}. ${(t.commentCount||0)} comments</span>${t.uid===S.uid?`<br><button class="btn link" style="color:var(--warn)" onclick="event.stopPropagation();delThread(\'${t.id}\')">🗑 Delete my thread</button>`:''}</div></article>`}).join('');
+  const tabs=`<div class="tabs" role="tablist" style="margin-bottom:16px"><button role="tab" aria-selected="${ctab==='threads'}" onclick="ctab='threads';render()">💬 Threads</button><button role="tab" aria-selected="${ctab==='carers'}" onclick="ctab='carers';render()">🤝 For family and carers</button></div>`;
+  if(ctab==='carers')return `<h1 style="margin-bottom:10px">Community</h1>${tabs}${carersHTML()}`;
+  return `${tabs}<div class="top"><div><h1>Community threads</h1><span class="mute">Share, ask and support each other.</span></div>
+    <button class="btn" onclick="${S.session?"go('new')":"go('auth')"}">${S.session?'Start a thread':'Sign in to post'}</button></div>${prompt()}${list||'<div class="card">No threads yet. Be the first to start one.</div>'}
+    <p class="note">This forum is peer support, not medical advice. For emergencies or medical decisions, contact a doctor.</p>`;
+}
+function authHTML(){
+  const up=authMode==='up';
+  return `<div class="card" style="max-width:460px;margin:20px auto"><h1>${up?'Create your account':'Welcome back'}</h1>
+  <div class="tabs" role="tablist"><button role="tab" aria-selected="${!up}" onclick="authMode='in';err='';render()">Sign in</button>
+  <button role="tab" aria-selected="${up}" onclick="authMode='up';err='';render()">Create account</button></div>
+  <label for="em">Email</label><input id="em" type="email" autocomplete="email">
+  ${up?'<label for="u">Username (shown on your posts)</label><input id="u" autocomplete="nickname" maxlength="24">':''}
+  <label for="p">Password</label><input id="p" type="password" autocomplete="${up?'new-password':'current-password'}">
+  ${up?'<label for="p2">Confirm password</label><input id="p2" type="password" autocomplete="new-password">':''}
+  <p class="err" role="alert">${esc(err)}</p>
+  <button class="btn" style="width:100%" onclick="${up?'signUp()':'signIn()'}">${up?'Create account':'Sign in'}</button>
+  <p class="note">Your answers are saved to your private account.</p></div>`;
+}
+const fbMsg=e=>({'auth/email-already-in-use':'That email already has an account. Sign in instead.','auth/invalid-email':'Enter a valid email address.','auth/weak-password':'Password needs at least 6 characters.','auth/invalid-credential':'Email or password is wrong. Check both, or create an account.','auth/network-request-failed':'No connection. Check the internet and try again.'}[e.code]||'Something went wrong. Please try again.');
+async function signUp(){
+  const em=$('#em').value.trim(),u=$('#u').value.trim(),p=$('#p').value,p2=$('#p2').value;
+  if(!window.FB)err='Firebase is not set up. Add your config in the file.';
+  else if(!em)err='Enter your email.';
+  else if(!/^\w{3,24}$/.test(u))err='Username needs 3 to 24 letters, numbers or underscores.';
+  else if(p.length<6)err='Password needs at least 6 characters.';
+  else if(p!==p2)err='Passwords do not match.';
+  else{try{await FB.signUp(em,p,u);return}catch(e){err=fbMsg(e)}}
+  render();
+}
+async function signIn(){
+  const em=$('#em').value.trim(),p=$('#p').value;
+  if(!window.FB)err='Firebase is not set up. Add your config in the file.';
+  else if(!em||!p)err='Enter your email and password.';
+  else{try{await FB.signIn(em,p);return}catch(e){err=fbMsg(e)}}
+  render();
+}
+function signOut(){FB.signOut()}
+window.onAuth=async user=>{
+  if(!user){stopListen();S.session=null;S.uid=null;S.profiles={};['plan','onb','new'].includes(view)?go('feed'):render();return}
+  S.uid=user.uid;S.session=user.displayName||user.email.split('@')[0];startListen();
+  let p=null;try{p=await FB.getProfile(user.uid)}catch(e){}
+  if(p)S.profiles[S.session]=p;
+  if(view==='auth')p?go('feed'):startOnb();else render();
+};
+function vote(id,d){
+  if(!S.session)return go('auth');
+  const t=S.threads.find(x=>x.id===id);
+  FB.vote(id,S.uid,t.votes[S.uid]===d?0:d).catch(()=>{});
+}
+function newHTML(){
+  return `<div class="card"><h1>Start a thread</h1>
+  <label for="tp">Topic</label><select id="tp"><option>Caregiving</option><option>Dementia</option><option>Amnesia recovery</option><option>Daily routines</option><option>Welcome</option></select>
+  <label for="ti">Title</label><input id="ti" maxlength="120">
+  <label for="bd">Your post</label><textarea id="bd"></textarea>
+  <p class="err" role="alert">${esc(err)}</p>
+  <button class="btn" onclick="postThread()">Post thread</button> <button class="btn link" onclick="go('feed')">Cancel</button></div>`;
+}
+async function delThread(id){
+  if(!confirm('Delete this thread and all its comments? This cannot be undone.'))return;
+  try{await FB.deleteThread(id);if(view==='thread')go('feed')}
+  catch(e){alert('Could not delete the thread. Check your connection and try again.')}
+}
+async function postThread(){
+  const title=$('#ti').value.trim(),body=$('#bd').value.trim(),topic=$('#tp').value;
+  if(!title||!body){err='Add a title and some text before posting.';render();$('#ti').value=title;$('#bd').value=body;return}
+  try{await FB.addThread({title,body,topic,author:S.session,uid:S.uid})}
+  catch(e){err='Could not post. Check your connection and try again.';render();$('#ti').value=title;$('#bd').value=body;return}
+  go('feed');
+}
+function threadHTML(){
+  const t=S.threads.find(x=>x.id===openId);if(!t)return feedHTML();
+  const me=S.uid&&t.votes[S.uid];
+  const cs=(S.comments[t.id]||[]).map(c=>`<div class="comment"><span class="mute"><b>${esc(c.a)}</b>, ${rel(c.t)}</span><p>${esc(c.x)}</p></div>`).join('')||'<p class="mute">No comments yet. Be the first to reply.</p>';
+  return `<button class="btn link" onclick="go('feed')">← Back to threads</button>
+  <article class="card" style="margin-top:10px"><div class="thread"><div class="votes">
+   <button class="${me===1?'on':''}" aria-label="Upvote" onclick="vote('${t.id}',1)">▲</button><b>${score(t)}</b>
+   <button class="${me===-1?'on':''}" aria-label="Downvote" onclick="vote('${t.id}',-1)">▼</button></div>
+   <div><span class="tag">${esc(t.topic)}</span><h1 style="margin-top:6px">${esc(t.title)}</h1>
+   <span class="mute">Posted by ${esc(t.author)}, ${rel(t.t)}</span><p style="white-space:pre-wrap">${esc(t.body)}</p>${t.uid===S.uid?`<button class="btn ghost" style="color:var(--warn);border-color:var(--warn)" onclick="delThread(\'${t.id}\')">🗑 Delete my thread</button>`:''}</div></div></article>
+  <h2>${(t.commentCount||0)} comments</h2><div class="card">${cs}</div>
+  ${S.session?`<div class="card"><label for="cm" style="margin-top:0">Add a comment</label><textarea id="cm"></textarea><p class="err" role="alert">${esc(err)}</p><button class="btn" onclick="addComment('${t.id}')">Post comment</button></div>`
+   :`<div class="card">Want to reply? <button class="btn link" onclick="go('auth')">Sign in</button> to join the conversation.</div>`}`;
+}
+async function addComment(id){
+  const x=$('#cm').value.trim();
+  if(!x){err='Write something before posting.';render();return}
+  try{await FB.addComment(id,{uid:S.uid,a:S.session,x});err='';render()}
+  catch(e){err='Could not post. Check your connection and try again.';render()}
+}
+const STEPS=[
+{k:'who',q:'Who is this check-in for?',h:'If you are answering for someone else, answer as you think they would.',t:'one',o:['Myself','Someone I care for']},
+{k:'feel',q:'How are you feeling today?',h:'There is no wrong answer.',t:'one',o:['Calm','Okay','Confused','Worried','Sad','Tired']},
+{k:'level',q:'Which sounds closest to daily life right now?',h:'This is a rough guide, not a diagnosis. A doctor can confirm the stage.',t:'one',o:['No diagnosis yet, but memory worries me','Mild: I forget recent things but manage on my own','Moderate: I need help with some daily tasks','Advanced: I need help with most things','I am not sure']},
+{k:'lost',q:'Do you ever feel lost or unsure where you are?',h:'This helps us suggest ways to keep you safe.',t:'one',o:['Never','Sometimes','Often']},
+{k:'comfort',q:'What helps you feel calm and safe?',h:'Choose all that fit.',t:'many',o:['Quiet and low light','Familiar music','Looking at photos','A steady daily routine','Short, simple sentences','Someone sitting beside me','A walk outside','Being called by my preferred name']},
+{k:'trust',q:'Who is someone you trust?',h:'This person can be told when you need help.',t:'trust'}
+];
+const COMFORT={
+'Quiet and low light':'Turn down the TV and bright lights. Keep the room calm.',
+'Familiar music':'Play songs from their younger years. Music often reaches memory when words cannot.',
+'Looking at photos':'Sit together with a photo album and ask about the people in it.',
+'A steady daily routine':'Keep meals, rest and activities at the same times each day.',
+'Short, simple sentences':'Use one idea per sentence. Speak slowly and wait for an answer.',
+'Someone sitting beside me':'Stay close and offer a hand. Presence matters more than conversation.',
+'A walk outside':'Take a short, safe walk at the same time each day.',
+'Being called by my preferred name':'Use their preferred name and greet them warmly each time.'};
+const STAGE={
+early:['Use a calendar, notes and phone reminders. Put them where the person will see them.','Label drawers and cupboards, and use a weekly pill organiser.','Let them do tasks themselves. Offer help only when asked or needed.','Talk about the future early: who they trust, and what they want.'],
+mid:['Give one step at a time, for example "Let us put on your shoes".','Offer two choices instead of open questions: "Tea or juice?"','Do not argue or correct. Go along with the feeling, then gently change the subject.','Add night lights, lock away hazards, and keep an ID bracelet on them.'],
+late:['Speak calmly at eye level and say who you are each time.','Use touch, music and familiar smells for comfort. Do not quiz them.','Watch for signs of pain or discomfort: grimacing, restlessness, refusing food.','Make sure a doctor or nurse reviews their care regularly.']};
+const FEEL={Calm:'Good to hear. Keep to your usual routine today.',Okay:'A steady day. A short walk or some music can keep it that way.',Confused:'Feeling confused is part of this, and it is not your fault. Sit somewhere familiar, breathe slowly, and tell someone close.',Worried:'Worry is understandable. Say what is on your mind to someone you trust, out loud or on paper.',Sad:'Sadness deserves care. Reach out to someone you trust today, even for a few minutes.',Tired:'Rest is healing. Keep the day light and quiet, and have water and a snack nearby.'};
+let ob={i:0,d:{}};
+function startOnb(){ob={i:0,d:Object.assign({},S.profiles[S.session]||{})};go('onb')}
+function prompt(){return S.session&&!S.profiles[S.session]?`<div class="card" style="background:var(--soft)"><b>Take a gentle 2-minute check-in</b><p style="margin:4px 0 10px">Six short questions about how you feel and what helps. We will build a care plan you can share with someone you trust.</p><button class="btn" onclick="startOnb()">Start check-in</button></div>`:''}
+function onbHTML(){
+  const s=STEPS[ob.i],d=ob.d,n=STEPS.length;let body='';
+  if(s.t==='trust'){
+    const f=(id,l,v,ex='')=>`<label for="${id}">${l}</label><input id="${id}" value="${esc(v||'')}" maxlength="40" ${ex}>`;
+    body=f('tn','Their name',d.tn)+f('tr','How are they connected to you? (daughter, friend, nurse)',d.tr)+f('tph','Phone number (optional)',d.tph,'type="tel"')+f('pn','What would you like people to call you?',d.pn);
+  }else{
+    body=`<div role="group" aria-label="${esc(s.q)}">`+s.o.map((o,j)=>{
+      const on=s.t==='one'?d[s.k]===o:(d[s.k]||[]).includes(o);
+      return `<button class="opt" aria-pressed="${on}" onclick="pick(${j})">${esc(o)}</button>`}).join('')+'</div>';
+  }
+  return `<div class="card" style="max-width:560px;margin:20px auto"><p class="mute">Question ${ob.i+1} of ${n}</p><div class="prog"><i style="width:${(ob.i+1)/n*100}%"></i></div>
+  <h1 style="margin-top:14px">${esc(s.q)}</h1><p class="mute">${esc(s.h||'')}</p>${body}<p class="err" role="alert">${esc(err)}</p>
+  <div class="nav">${ob.i?'<button class="btn ghost" onclick="onbBack()">Back</button>':'<button class="btn link" onclick="go(\'feed\')">Skip for now</button>'}
+  <button class="btn" onclick="onbNext()">${ob.i===n-1?'Open my calm space':'Next'}</button></div></div>`;
+}
+function pick(j){
+  const s=STEPS[ob.i],o=s.o[j],d=ob.d;err='';
+  if(s.t==='one')d[s.k]=o;
+  else{const a=d[s.k]||[];d[s.k]=a.includes(o)?a.filter(x=>x!==o):[...a,o]}
+  render();
+}
+function collect(){
+  if(STEPS[ob.i].t!=='trust')return;
+  ['tn','tr','tph','pn'].forEach(id=>{ob.d[id]=$('#'+id).value.trim()});
+}
+function onbBack(){collect();err='';ob.i--;render()}
+async function onbNext(){
+  collect();const s=STEPS[ob.i],d=ob.d;
+  if(s.t==='one'&&!d[s.k])err='Choose one answer to continue.';
+  else if(s.t==='many'&&!(d[s.k]||[]).length)err='Choose at least one to continue.';
+  else if(s.t==='trust'&&!d.tn)err='Add the name of one person you trust.';
+  else{
+    err='';
+    if(ob.i<STEPS.length-1){ob.i++;return render()}
+    d.date=Date.now();
+    try{await FB.saveProfile(S.uid,d)}catch(e){err='Could not save your answers. Check the connection and try again.';return render()}
+    S.profiles[S.session]=d;return go('plan');
+  }
+  render();
+}
+function sumText(p){
+  return `Care plan for ${p.pn||S.session}\nFeeling today: ${p.feel}\nStage (self-reported): ${p.level}\nGets lost or unsure of place: ${p.lost}\nWhat helps: ${(p.comfort||[]).join(', ')}\nTrusted person: ${p.tn}${p.tr?' ('+p.tr+')':''}${p.tph?', '+p.tph:''}`;
+}
+async function copySum(b){
+  try{await navigator.clipboard.writeText(sumText(S.profiles[S.session]));b.textContent='Copied'}
+  catch(e){b.textContent='Copy not available here'}
+}
+const FEELEMO={Calm:'😌',Okay:'🙂',Confused:'😕',Worried:'😟',Sad:'😢',Tired:'😴'};
+let act=null,T=[],br=null,ac=null,mg=null,mus=null;
+function stopAll(){T.forEach(t=>{clearInterval(t);clearTimeout(t)});T=[];clearInterval(br);mus=null}
+function openAct(a){stopAll();act=a;if(a==='match')newGame();render();scrollTo(0,0)}
+function afterPlan(){
+  clearInterval(br);
+  if(act==='breathe'||act==='help'){let i=0;const e=$('#bt');if(e)br=setInterval(()=>{i++;e.textContent=i%2?'Breathe out':'Breathe in'},4000)}
+}
+const NOTES=[261.6,293.7,329.6,392,440],COLS=['#e07a8a','#e8a94a','#6cb58a','#5a9bd4','#a68bd0'];
+function tone(f){
+  try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime;
+  o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(.25,n+.05);g.gain.exponentialRampToValueAtTime(.001,n+2.2);
+  o.connect(g);g.connect(ac.destination);o.start();o.stop(n+2.3)}catch(e){}
+}
+function bub(el,i){tone(NOTES[i]);el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop')}
+function toggleMusic(b){
+  if(mus){clearInterval(mus);mus=null;b.textContent='▶ Play gentle music';return}
+  tone(NOTES[2]);mus=setInterval(()=>tone(NOTES[Math.floor(Math.random()*5)]),1700);T.push(mus);b.textContent='⏸ Stop music';
+}
+function newGame(){const e=['🌻','🐦','🍎'];mg={c:[...e,...e].sort(()=>Math.random()-.5),o:[],d:[]}}
+function flip(i){
+  if(mg.o.length>=2||mg.o.includes(i)||mg.d.includes(i))return;
+  mg.o.push(i);
+  if(mg.o.length===2){const[a,b]=mg.o;if(mg.c[a]===mg.c[b]){mg.d.push(a,b);mg.o=[]}else T.push(setTimeout(()=>{mg.o=[];render()},1100))}
+  render();
+}
+const back=`<button class="btn ghost bigbtn" onclick="openAct(null)">⬅ Home</button>`;
+function orb(){return `<div class="orbwrap"><div class="orb"></div></div><p class="big" id="bt" aria-live="polite">Breathe in</p>`}
+function planHTML(){
+  const p=S.profiles[S.session];
+  if(!p)return `<div class="card"><h1>My calm space</h1><p>Answer a few gentle questions and we will make a calm space just for you.</p><button class="btn" onclick="startOnb()">Start check-in</button></div>`;
+  const name=p.pn||S.session,call=p.tph?`<a class="btn bigbtn" style="display:block;text-align:center;text-decoration:none;margin:14px 0" href="tel:${esc(p.tph.replace(/[^\d+]/g,''))}">📞 Call ${esc(p.tn)}</a>`:'';
+  if(act==='breathe')return `<div style="text-align:center">${back}<h1>Breathe with the circle</h1>${orb()}</div>`;
+  if(act==='music')return `<div style="text-align:center">${back}<h1>Tap a bubble</h1><div class="bubs">${NOTES.map((n,i)=>`<button class="bub" style="background:${COLS[i]}" aria-label="Note ${i+1}" onclick="bub(this,${i})"></button>`).join('')}</div>
+    <button class="btn bigbtn" onclick="toggleMusic(this)">▶ Play gentle music</button></div>`;
+  if(act==='match'){
+    const win=mg.d.length===6;
+    return `<div style="text-align:center">${back}<h1>${win?'Well done! 🎉':'Find the pairs'}</h1><div class="mc">${mg.c.map((c,i)=>{const sh=mg.o.includes(i)||mg.d.includes(i);return `<button class="mcard ${mg.d.includes(i)?'ok':''}" aria-label="${sh?c:'Hidden card'}" onclick="flip(${i})">${sh?c:'❔'}</button>`}).join('')}</div>
+    ${win?'<button class="btn bigbtn" onclick="newGame();render()">Play again</button>':'<p class="mute">Tap two cards. Take your time.</p>'}</div>`;
+  }
+  if(act==='card'){
+    const d=new Date(),h=d.getHours(),pt=h<12?['morning','☀️']:h<17?['afternoon','🌤️']:h<21?['evening','🌇']:['night','🌙'];
+    return `${back}<div class="card idc"><p>My name is<br><b>${esc(name)}</b></p><p>Today is<br><b>${d.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</b></p>
+    <p>It is ${pt[0]} ${pt[1]}</p><p>I am safe 💚</p><p><b>${esc(p.tn)}</b>${p.tr?' is my '+esc(p.tr):' is someone I trust'}</p>${call}</div>`;
+  }
+  if(act==='help')return `<div style="text-align:center">${back}<h1>You are safe</h1><p class="big">Breathe with me. Then call ${esc(p.tn)}.</p>${call}${orb()}</div>`;
+  const idx=STEPS[2].o.indexOf(p.level);
+  let tiles=[{id:'breathe',e:'🫁',l:'Breathe',w:'Quiet and low light'},{id:'music',e:'🎵',l:'Music',w:'Familiar music'},{id:'match',e:'🃏',l:'Memory game',w:'Looking at photos'},{id:'card',e:'🪪',l:'About me',w:'Being called by my preferred name'}];
+  if(idx===3)tiles=tiles.filter(t=>t.id!=='match');
+  const pref=t=>(p.comfort||[]).includes(t.w)?0:1;
+  tiles.sort((a,b)=>pref(a)-pref(b));
+  const h=new Date().getHours(),g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  return `<div style="text-align:center"><div style="font-size:4rem" aria-hidden="true">${FEELEMO[p.feel]}</div><h1>${g}, ${esc(name)}</h1><p class="mute">${esc(FEEL[p.feel])}</p></div>
+  <div class="tiles">${tiles.map(t=>`<button class="tile" onclick="openAct('${t.id}')"><span aria-hidden="true">${t.e}</span>${t.l}${pref(t)?'':'<small>⭐ For you</small>'}</button>`).join('')}</div>
+  <button class="tile" style="width:100%;min-height:110px;flex-direction:row;gap:14px;margin-bottom:14px" onclick="go('feed')"><span aria-hidden="true">💬</span>Community</button>
+  <button class="tile sos" onclick="openAct('help')"><span aria-hidden="true">🆘</span>I need help</button>
+`;
+}
+render();
+</script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,addDoc,collection,serverTimestamp,getDocs,query,orderBy,onSnapshot,updateDoc,deleteField,increment,writeBatch} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 1) Paste your own values from Firebase console > Project settings > Your apps > Web app
+const firebaseConfig={
+  apiKey:"AIzaSyAMKg2WiJf7STpDkz979Vtjyu_3uzFM6oE",
+  authDomain:"swara-f3ed3.firebaseapp.com",
+  projectId:"swara-f3ed3",
+  appId:"1:557466144839:web:4e8854b41f526d3e742162"
+};
+
+if(firebaseConfig.apiKey.startsWith("YOUR_")){
+  console.warn("Firebase config missing. Fill in firebaseConfig.");
+}else{
+  const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+  window.FB={
+    async signUp(em,p,u){
+      const c=await createUserWithEmailAndPassword(auth,em,p);
+      await updateProfile(c.user,{displayName:u});
+      window.onAuth(auth.currentUser);
+    },
+    signIn:(em,p)=>signInWithEmailAndPassword(auth,em,p),
+    signOut:()=>signOut(auth),
+    async getProfile(uid){const s=await getDoc(doc(db,"users",uid));return s.exists()?s.data():null},
+    listenThreads(cb){return onSnapshot(query(collection(db,"threads"),orderBy("createdAt","desc")),sn=>cb(sn.docs.map(x=>{const d=x.data();return{...d,id:x.id,votes:d.votes||{},t:d.createdAt&&d.createdAt.toMillis?d.createdAt.toMillis():Date.now()}})),e=>console.error(e))},
+    listenComments(id,cb){return onSnapshot(query(collection(db,"threads",id,"comments"),orderBy("createdAt","asc")),sn=>cb(sn.docs.map(x=>{const d=x.data();return{...d,id:x.id,t:d.createdAt&&d.createdAt.toMillis?d.createdAt.toMillis():Date.now()}})),e=>console.error(e))},
+    async deleteThread(id){
+      const cs=await getDocs(collection(db,"threads",id,"comments"));
+      const b=writeBatch(db);
+      cs.forEach(c=>b.delete(c.ref));
+      b.delete(doc(db,"threads",id));
+      await b.commit();
+    },
+    addThread(o){return addDoc(collection(db,"threads"),{...o,votes:{[o.uid]:1},commentCount:0,createdAt:serverTimestamp()})},
+    vote(id,uid,d){return updateDoc(doc(db,"threads",id),{["votes."+uid]:d===0?deleteField():d})},
+    async addComment(id,o){
+      const b=writeBatch(db);
+      b.set(doc(collection(db,"threads",id,"comments")),{...o,createdAt:serverTimestamp()});
+      b.update(doc(db,"threads",id),{commentCount:increment(1)});
+      await b.commit();
+    },
+    async saveProfile(uid,d){
+      // latest answers
+      await setDoc(doc(db,"users",uid),{...d,updatedAt:serverTimestamp()});
+      // history of every check-in
+      await addDoc(collection(db,"users",uid,"checkins"),{...d,createdAt:serverTimestamp()});
+    }
+  };
+  onAuthStateChanged(auth,u=>window.onAuth(u));
+}
+</script>
+</body>
+</html>
